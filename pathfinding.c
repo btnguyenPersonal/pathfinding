@@ -102,7 +102,7 @@ int getBestPath(int** maze) {
 int main(int argc, char* argv[]) {
     int* maze[LENGTH];
     for (int i = 0; i < LENGTH; i++) {
-        maze[i] = (int*)malloc(LENGTH * sizeof(int));
+        maze[i] = malloc(LENGTH * sizeof(int));
     }
     readFile(argv[1], maze);
     printf("answer: %d\n", getBestPath(maze));
