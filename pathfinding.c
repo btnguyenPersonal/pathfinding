@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define LENGTH 10
+#define LENGTH 100
 
 void readFile(char* filename, int** maze) {
     FILE *file;
@@ -22,13 +22,29 @@ void readFile(char* filename, int** maze) {
     fclose(file);
 }
 
+void incrementMaze(int** maze) {
+    for (int x = 0; x < LENGTH; x++) {
+        for (int y = 0; y < LENGTH; y++) {
+            maze[x][y]++;
+            if (maze[x][y] == 10) {
+                maze[x][y] = 1;
+            }
+        }
+    }
+}
+
 void printMaze(int** maze) {
     for (int x = 0; x < LENGTH; x++) {
         for (int y = 0; y < LENGTH; y++) {
-            printf("%d", maze[x][y]);
+            if (maze[x][y] == 999999) {
+                printf("%d", 0);
+            } else {
+                printf("%d", maze[x][y]);
+            }
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 void freeMaze(int** maze) {
@@ -37,26 +53,49 @@ void freeMaze(int** maze) {
     }
 }
 
+int getBestPathRecursive(int** maze, int** current, int x, int y, int risk) {
+    if (x < 0 || y < 0 || x >= LENGTH || y >= LENGTH) {
+        return 999999;
+    }
+    int newRisk = risk + maze[x][y];
+    if (current[x][y] > newRisk) {
+        current[x][y] = newRisk;
+    } else {
+        return 999999;
+    }
+    if (x == LENGTH - 1 && y == LENGTH - 1) {
+        return newRisk;
+    }
+    int lowestRisk = getBestPathRecursive(maze, current, x + 1, y, newRisk);
+    int nextRisk = getBestPathRecursive(maze, current, x, y + 1, newRisk);
+    if (lowestRisk < nextRisk) {
+        lowestRisk = nextRisk;
+    }
+    nextRisk = getBestPathRecursive(maze, current, x, y - 1, newRisk);
+    if (lowestRisk < nextRisk) {
+        lowestRisk = nextRisk;
+    }
+    nextRisk = getBestPathRecursive(maze, current, x - 1, y, newRisk);
+    if (lowestRisk < nextRisk) {
+        lowestRisk = nextRisk;
+    }
+    return lowestRisk;
+}
+
 int getBestPath(int** maze) {
-    int* path = malloc(sizeof(int) * LENGTH * LENGTH);
     int* current[LENGTH];
     for (int i = 0; i < LENGTH; i++) {
         current[i] = (int*)malloc(LENGTH * sizeof(int));
     }
-    for (int x = 0; x < LENGTH; y++) {
+    for (int x = 0; x < LENGTH; x++) {
         for (int y = 0; y < LENGTH; y++) {
-            current[i] = 999;
+            current[x][y] = 999999;
         }
     }
-    int bestRisk = getBestPathRecursive(maze, current, 0, 0, path, 0, -1 * maze[0][0]);
+    getBestPathRecursive(maze, current, 0, 0, -1 * maze[0][0]);
+    int bestRisk = current[LENGTH - 1][LENGTH - 1];
     freeMaze(current);
     return bestRisk;
-}
-
-int getBestPathRecursive(int** maze, int** current, int x, int y, int* path, int pathLength, int risk) {
-    int newRisk = risk + maze[x][y];
-    return newRisk;
-    int lowestRisk = getBestPathRecursive();
 }
 
 int main(int argc, char* argv[]) {
@@ -66,6 +105,24 @@ int main(int argc, char* argv[]) {
     }
     readFile(argv[1], maze);
     printMaze(maze);
+    incrementMaze(maze);
+    printMaze(maze);
+    incrementMaze(maze);
+    printMaze(maze);
+    incrementMaze(maze);
+    printMaze(maze);
+    incrementMaze(maze);
+    printMaze(maze);
+    incrementMaze(maze);
+    printMaze(maze);
+    incrementMaze(maze);
+    printMaze(maze);
+    incrementMaze(maze);
+    printMaze(maze);
+    incrementMaze(maze);
+    printMaze(maze);
+    incrementMaze(maze);
+    /* printf("%d\n", getBestPath(maze)); */
     freeMaze(maze);
     return 0;
 }
