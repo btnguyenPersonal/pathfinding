@@ -1,25 +1,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define LENGTH 100
+#define LENGTH 500
 
 void readFile(char* filename, int** maze) {
     FILE *file;
-    file = fopen(filename, "r");
-    int x = 0;
-    int y = 0;
-    while (!feof(file)) {
-        char c;
-        fscanf(file, "%c", &c);
-        if (c != '\n') {
-            maze[x][y++] = c - '0';
-            if (y == LENGTH) {
-                y = 0;
-                x++;
+    if ((file = fopen(filename, "r")) != NULL) {
+        int x = 0;
+        int y = 0;
+        for (int i = 0; i < (LENGTH * LENGTH) + LENGTH; i++) {
+            char c;
+            fscanf(file, "%c", &c);
+            if (c != '\n') {
+                maze[x][y++] = c - '0';
+                if (y == LENGTH) {
+                    y = 0;
+                    x++;
+                }
             }
         }
+        fclose(file);
     }
-    fclose(file);
 }
 
 void incrementMaze(int** maze) {
@@ -104,25 +105,7 @@ int main(int argc, char* argv[]) {
         maze[i] = (int*)malloc(LENGTH * sizeof(int));
     }
     readFile(argv[1], maze);
-    printMaze(maze);
-    incrementMaze(maze);
-    printMaze(maze);
-    incrementMaze(maze);
-    printMaze(maze);
-    incrementMaze(maze);
-    printMaze(maze);
-    incrementMaze(maze);
-    printMaze(maze);
-    incrementMaze(maze);
-    printMaze(maze);
-    incrementMaze(maze);
-    printMaze(maze);
-    incrementMaze(maze);
-    printMaze(maze);
-    incrementMaze(maze);
-    printMaze(maze);
-    incrementMaze(maze);
-    /* printf("%d\n", getBestPath(maze)); */
+    printf("answer: %d\n", getBestPath(maze));
     freeMaze(maze);
     return 0;
 }
