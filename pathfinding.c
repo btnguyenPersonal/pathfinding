@@ -3,7 +3,7 @@
 
 #define LENGTH 100
 
-void readFile(char* filename, int** maze) {
+int readFile(char* filename, int** maze) {
     FILE *file;
     if ((file = fopen(filename, "r")) != NULL) {
         int x = 0;
@@ -66,25 +66,25 @@ int getBestPathRecursive(int** maze, int** current, int x, int y, int risk) {
     }
     int lowestRisk = 999999;
     int nextRisk = 999999;
-    if (x + 1 < LENGTH) {
+    if (x + 1 < LENGTH && newRisk + maze[x + 1][y] < current[x + 1][y]) {
         nextRisk = getBestPathRecursive(maze, current, x + 1, y, newRisk);
         if (lowestRisk < nextRisk) {
             lowestRisk = nextRisk;
         }
     }
-    if (y + 1 < LENGTH) {
+    if (y + 1 < LENGTH && newRisk + maze[x][y + 1] < current[x][y + 1]) {
         nextRisk = getBestPathRecursive(maze, current, x, y + 1, newRisk);
         if (lowestRisk < nextRisk) {
             lowestRisk = nextRisk;
         }
     }
-    if (y > 0) {
+    if (y > 0 && newRisk + maze[x][y - 1] < current[x][y - 1]) {
         nextRisk = getBestPathRecursive(maze, current, x, y - 1, newRisk);
         if (lowestRisk < nextRisk) {
             lowestRisk = nextRisk;
         }
     }
-    if (x > 0) {
+    if (x > 0 && newRisk + maze[x - 1][y] < current[x - 1][y]) {
         nextRisk = getBestPathRecursive(maze, current, x - 1, y, newRisk);
         if (lowestRisk < nextRisk) {
             lowestRisk = nextRisk;
