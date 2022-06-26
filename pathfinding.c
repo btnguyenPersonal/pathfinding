@@ -40,6 +40,16 @@ void fillMaze(int num, int** current) {
     }
 }
 
+int** cloneMaze(int** maze) {
+    int** clone = createMaze();
+    for (int x = 0; x < LENGTH; x++) {
+        for (int y = 0; y < LENGTH; y++) {
+            clone[x][y] = maze[x][y];
+        }
+    }
+    return clone;
+}
+
 void incrementMaze(int** maze) {
     for (int x = 0; x < LENGTH; x++) {
         for (int y = 0; y < LENGTH; y++) {
