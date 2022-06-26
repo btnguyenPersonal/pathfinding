@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #define LENGTH 100
+#define MAX 999999
 
 int readFile(char* filename, int** maze) {
     FILE *file;
@@ -23,6 +24,22 @@ int readFile(char* filename, int** maze) {
     }
 }
 
+int** createMaze() {
+    int** maze = malloc(LENGTH * sizeof(int*));
+    for (int i = 0; i < LENGTH; i++) {
+        maze[i] = malloc(LENGTH * sizeof(int));
+    }
+    return maze;
+}
+
+void fillMaze(int num, int** current) {
+    for (int x = 0; x < LENGTH; x++) {
+        for (int y = 0; y < LENGTH; y++) {
+            current[x][y] = num;
+        }
+    }
+}
+
 void incrementMaze(int** maze) {
     for (int x = 0; x < LENGTH; x++) {
         for (int y = 0; y < LENGTH; y++) {
@@ -37,7 +54,7 @@ void incrementMaze(int** maze) {
 void printMaze(int** maze) {
     for (int x = 0; x < LENGTH; x++) {
         for (int y = 0; y < LENGTH; y++) {
-            if (maze[x][y] == 999999) {
+            if (maze[x][y] == MAX) {
                 printf("%d", 0);
             } else {
                 printf("%d", maze[x][y]);
@@ -59,13 +76,13 @@ int getBestPathRecursive(int** maze, int** current, int x, int y, int risk) {
     if (current[x][y] > newRisk) {
         current[x][y] = newRisk;
     } else {
-        return 999999;
+        return MAX;
     }
     if (x == LENGTH - 1 && y == LENGTH - 1) {
         return newRisk;
     }
-    int lowestRisk = 999999;
-    int nextRisk = 999999;
+    int lowestRisk = MAX;
+    int nextRisk = MAX;
     if (x + 1 < LENGTH && newRisk + maze[x + 1][y] < current[x + 1][y]) {
         nextRisk = getBestPathRecursive(maze, current, x + 1, y, newRisk);
         if (lowestRisk < nextRisk) {
@@ -94,15 +111,8 @@ int getBestPathRecursive(int** maze, int** current, int x, int y, int risk) {
 }
 
 int getBestPath(int** maze) {
-    int* current[LENGTH];
-    for (int i = 0; i < LENGTH; i++) {
-        current[i] = (int*)malloc(LENGTH * sizeof(int));
-    }
-    for (int x = 0; x < LENGTH; x++) {
-        for (int y = 0; y < LENGTH; y++) {
-            current[x][y] = 999999;
-        }
-    }
+    int** current = createMaze();
+    fillMaze(MAX, current);
     getBestPathRecursive(maze, current, 0, 0, -1 * maze[0][0]);
     int bestRisk = current[LENGTH - 1][LENGTH - 1];
     freeMaze(current);
@@ -110,10 +120,7 @@ int getBestPath(int** maze) {
 }
 
 int main(int argc, char* argv[]) {
-    int* maze[LENGTH];
-    for (int i = 0; i < LENGTH; i++) {
-        maze[i] = malloc(LENGTH * sizeof(int));
-    }
+    int** maze = createMaze();
     readFile(argv[1], maze);
     printf("answer: %d\n", getBestPath(maze));
     freeMaze(maze);
