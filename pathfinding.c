@@ -1,8 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-
-#define LENGTH 100
-#define MAX 999999
+#include "pathfinding.h"
 
 int readFile(char* filename, int** maze) {
     FILE *file;

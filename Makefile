@@ -1,4 +1,4 @@
 make:
-	gcc pathfinding.c -o pf;./pf largemaze
+	gcc pathfinding.c pathfinding.h -o pf;./pf mediummaze
 clean:
 	rm pf
